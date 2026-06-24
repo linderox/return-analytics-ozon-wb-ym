@@ -1,35 +1,34 @@
 from fastapi import APIRouter, Depends, HTTPException
 from webapp.backend.auth import get_current_user
-from core.db.database import get_db_connection, get_sqlite_conn
+from core.db.database import get_supabase_client, get_sqlite_conn
 from webapp.backend.services.sync_wb import sync_wb_returns
 from webapp.backend.services.sync_ozon import sync_ozon_returns
 from webapp.backend.services.sync_ym import sync_ym_returns
 from uuid import UUID
+from datetime import datetime, timezone
 
 router = APIRouter()
 
 @router.post("/sync/{shop_id}")
 async def sync_shop(shop_id: UUID, user_id: str = Depends(get_current_user)):
-    conn = await get_db_connection()
-    try:
-        shop = await conn.fetchrow("SELECT * FROM public.shops WHERE id = $1 AND user_id = $2", shop_id, user_id)
-        if not shop:
-            raise HTTPException(status_code=404, detail="Shop not found")
+    client = await get_supabase_client()
+    shop_result = await client.table('shops').select('*').eq('id', str(shop_id)).eq('user_id', user_id).maybe_single().execute()
+    if shop_result.data is None:
+        raise HTTPException(status_code=404, detail="Shop not found")
 
-        marketplace = shop['marketplace']
-        if marketplace == 'wb':
-            result = await sync_wb_returns(dict(shop), user_id, conn)
-        elif marketplace == 'ozon':
-            result = await sync_ozon_returns(dict(shop), user_id, conn)
-        elif marketplace == 'ym':
-            result = await sync_ym_returns(dict(shop), user_id, conn)
-        else:
-            raise HTTPException(status_code=400, detail="Unsupported marketplace")
+    shop = shop_result.data
+    marketplace = shop['marketplace']
+    if marketplace == 'wb':
+        result = await sync_wb_returns(shop, user_id)
+    elif marketplace == 'ozon':
+        result = await sync_ozon_returns(shop, user_id)
+    elif marketplace == 'ym':
+        result = await sync_ym_returns(shop, user_id)
+    else:
+        raise HTTPException(status_code=400, detail="Unsupported marketplace")
 
-        await conn.execute("UPDATE public.shops SET last_synced_at = NOW() WHERE id = $1", shop_id)
-        return result
-    finally:
-        await conn.close()
+    await client.table('shops').update({'last_synced_at': datetime.now(timezone.utc).isoformat()}).eq('id', str(shop_id)).execute()
+    return result
 
 @router.get("/{marketplace}")
 async def get_returns(marketplace: str, user_id: str = Depends(get_current_user)):

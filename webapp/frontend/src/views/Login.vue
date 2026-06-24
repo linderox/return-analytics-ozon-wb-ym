@@ -21,6 +21,16 @@
           :class="activeTab === 'google' ? 'bg-[#1A1A1A] text-white' : 'bg-white text-[#1A1A1A] hover:bg-[#FBF0D3]'"
           class="flex-1 py-2 text-xs font-bold uppercase tracking-widest transition-colors"
         >Google</button>
+        <button
+          @click="activeTab = 'yandex'"
+          :class="activeTab === 'yandex' ? 'bg-[#1A1A1A] text-white' : 'bg-white text-[#1A1A1A] hover:bg-[#FBF0D3]'"
+          class="flex-1 py-2 text-xs font-bold uppercase tracking-widest transition-colors"
+        >Яндекс</button>
+      </div>
+
+      <!-- OAuth error banner (shown when redirected back with ?error=) -->
+      <div v-if="oauthError" class="mb-4 text-xs text-red-600 font-mono border border-red-200 bg-red-50 px-3 py-2">
+        {{ oauthErrorMessage }}
       </div>
 
       <!-- Email/password form -->
@@ -113,6 +123,23 @@
         </button>
       </div>
 
+      <!-- Yandex OAuth -->
+      <div v-if="activeTab === 'yandex'">
+        <button
+          @click="loginWithYandex"
+          class="w-full py-3 px-4 border-2 border-[#FF0000] flex items-center justify-center gap-3 hover:bg-red-50 transition-colors font-bold uppercase text-xs tracking-widest text-[#FF0000]"
+        >
+          <!-- Yandex "Я" logo -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FF0000">
+            <path d="M13.44 21V13.1H15L17.87 3H15.61L13.44 9.7H13.38L11.21 3H8.95L11.82 13.1H13.44V21H13.44ZM2.5 21H4.72V13.66H6.37C9.29 13.66 10.78 12.04 10.78 9.3C10.78 6.56 9.29 5 6.37 5H2.5V21ZM4.72 11.64V7.02H6.17C7.81 7.02 8.52 7.82 8.52 9.3C8.52 10.78 7.81 11.64 6.17 11.64H4.72Z"/>
+          </svg>
+          Войти через Яндекс
+        </button>
+        <p class="mt-4 text-[10px] text-[#A3A3A3] font-mono text-center">
+          Новые пользователи будут зарегистрированы автоматически
+        </p>
+      </div>
+
       <div class="mt-8 pt-8 border-t border-[#F5F5F5] text-[10px] text-[#A3A3A3] text-center font-mono uppercase tracking-widest">
         Авторизация через Supabase OAuth
       </div>
@@ -121,18 +148,42 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { supabase } from '../lib/supabase'
 
 const router = useRouter()
-const activeTab = ref<'email' | 'google'>('email')
+const route = useRoute()
+const activeTab = ref<'email' | 'google' | 'yandex'>('email')
 const email = ref('')
 const password = ref('')
 const errorMsg = ref('')
 const loading = ref(false)
 const showForgot = ref(false)
 const resetSent = ref(false)
+const oauthError = ref('')
+
+const oauthErrorMessages: Record<string, string> = {
+  yandex_denied: 'Вы отменили вход через Яндекс',
+  yandex_token: 'Ошибка получения токена Яндекс',
+  no_email: 'Яндекс не предоставил email адрес',
+  create_user: 'Ошибка создания пользователя',
+  session: 'Ошибка создания сессии',
+  oauth_error: 'Ошибка OAuth авторизации',
+}
+
+const oauthErrorMessage = ref('')
+
+onMounted(() => {
+  const errorCode = route.query.error as string
+  if (errorCode) {
+    oauthError.value = errorCode
+    oauthErrorMessage.value = oauthErrorMessages[errorCode] || 'Ошибка авторизации'
+    activeTab.value = 'yandex'
+    // Clean up URL
+    router.replace({ query: {} })
+  }
+})
 
 const loginWithEmail = async () => {
   errorMsg.value = ''
@@ -170,10 +221,13 @@ const sendReset = async () => {
 const loginWithGoogle = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: {
-      redirectTo: window.location.origin
-    }
+    options: { redirectTo: window.location.origin }
   })
   if (error) console.error('Error logging in:', error.message)
+}
+
+const loginWithYandex = () => {
+  // Redirect to backend which handles the full Yandex OAuth flow
+  window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/yandex`
 }
 </script>

@@ -2,7 +2,7 @@ import requests
 from datetime import datetime, timedelta, timezone
 from core.db.database import ensure_returns_table, get_sqlite_conn
 
-async def sync_wb_returns(shop: dict, user_id: str, conn_supabase):
+async def sync_wb_returns(shop: dict, user_id: str):
     token = shop.get("wb_token")
     days = 60 # Extended window for history
     today = datetime.now(tz=timezone.utc)

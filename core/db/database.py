@@ -1,24 +1,51 @@
 import os
 import sqlite3
-import asyncpg
+import logging
+from fastapi import HTTPException
+from supabase import create_async_client, AsyncClient
 from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+logger = logging.getLogger("database")
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 SQLITE_DB_PATH = "returns_history.db"
 
-async def get_db_connection():
-    # Still using asyncpg for Supabase (profiles, shops)
-    if not DATABASE_URL:
-        # Mock connection or raise clearer error for local testing
-        raise ValueError("DATABASE_URL environment variable is not set. Please check your .env file.")
-    return await asyncpg.connect(DATABASE_URL)
+_supabase_client: AsyncClient | None = None
+
+
+async def get_supabase_client() -> AsyncClient:
+    global _supabase_client
+    if _supabase_client is not None:
+        return _supabase_client
+
+    if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
+        logger.error("[db] SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not set")
+        raise HTTPException(
+            status_code=503,
+            detail="Supabase credentials not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env."
+        )
+
+    try:
+        logger.info(f"[db] Connecting to Supabase: {SUPABASE_URL}")
+        _supabase_client = await create_async_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+        logger.info("[db] Supabase client initialised")
+        return _supabase_client
+    except Exception as e:
+        logger.exception(f"[db] Failed to create Supabase client: {e}")
+        raise HTTPException(
+            status_code=503,
+            detail=f"Could not connect to Supabase: {type(e).__name__} — check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY"
+        )
+
 
 def get_sqlite_conn():
     conn = sqlite3.connect(SQLITE_DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
+
 
 async def ensure_returns_table(user_id: str, marketplace: str):
     prefix = user_id.replace("-", "")[:12]
@@ -97,50 +124,3 @@ async def ensure_returns_table(user_id: str, marketplace: str):
     conn.commit()
     conn.close()
     return table_name
-
-async def init_billing_tables(conn):
-    # Billing stays in Supabase
-    sql = """
-    CREATE TABLE IF NOT EXISTS public.subscriptions (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id UUID NOT NULL,
-        plan TEXT NOT NULL,
-        started_at TIMESTAMPTZ DEFAULT NOW(),
-        expires_at TIMESTAMPTZ NOT NULL,
-        yookassa_id TEXT,
-        sbp_qr_code TEXT,
-        status TEXT DEFAULT 'pending'
-    );
-    """
-    await conn.execute(sql)
-
-async def init_profiles_and_shops(conn):
-    sql = """
-    CREATE TABLE IF NOT EXISTS public.profiles (
-      id UUID PRIMARY KEY,
-      fio TEXT,
-      phone TEXT,
-      plan TEXT NOT NULL DEFAULT 'free',
-      is_admin BOOLEAN DEFAULT FALSE,
-      created_at TIMESTAMPTZ DEFAULT NOW()
-    );
-    CREATE TABLE IF NOT EXISTS public.shops (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      user_id UUID NOT NULL,
-      marketplace TEXT NOT NULL,
-      name TEXT NOT NULL,
-      google_sheet_id TEXT,
-      ozon_client_id TEXT,
-      ozon_client_secret TEXT,
-      wb_token TEXT,
-      ym_client_id TEXT,
-      ym_client_secret TEXT,
-      ym_campaign_id TEXT,
-      status_filter TEXT[],
-      schema_filter TEXT[],
-      is_active BOOLEAN DEFAULT TRUE,
-      last_synced_at TIMESTAMPTZ,
-      created_at TIMESTAMPTZ DEFAULT NOW()
-    );
-    """
-    await conn.execute(sql)

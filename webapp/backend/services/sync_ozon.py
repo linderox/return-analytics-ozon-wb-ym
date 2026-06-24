@@ -2,7 +2,7 @@ import requests
 from datetime import datetime, timedelta, timezone
 from core.db.database import ensure_returns_table, get_sqlite_conn
 
-async def sync_ozon_returns(shop: dict, user_id: str, conn_supabase):
+async def sync_ozon_returns(shop: dict, user_id: str):
     client_id = shop.get("ozon_client_id")
     api_key = shop.get("ozon_client_secret")
     days = 60
