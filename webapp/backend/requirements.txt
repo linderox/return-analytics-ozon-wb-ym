@@ -4,5 +4,7 @@ python-jose[cryptography]
 python-dotenv
 asyncpg
 requests
+httpx
 supabase
 yookassa
+pydantic[email]

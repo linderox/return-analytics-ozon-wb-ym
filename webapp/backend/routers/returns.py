@@ -33,18 +33,25 @@ async def sync_shop(shop_id: UUID, user_id: str = Depends(get_current_user)):
 
 @router.get("/{marketplace}")
 async def get_returns(marketplace: str, user_id: str = Depends(get_current_user)):
+    if marketplace not in ("ozon", "wb", "ym"):
+        raise HTTPException(status_code=400, detail="Unsupported marketplace")
+
     prefix = user_id.replace("-", "")[:12]
     table_name = f"{prefix}_returns_{marketplace}"
 
-    db = get_sqlite_conn()
-    cursor = db.cursor()
     try:
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table_name,))
-        if not cursor.fetchone():
-            return []
-
-        cursor.execute(f"SELECT * FROM {table_name} ORDER BY synced_at DESC LIMIT 100")
-        rows = cursor.fetchall()
-        return [dict(r) for r in rows]
-    finally:
-        db.close()
+        db = get_sqlite_conn()
+        cursor = db.cursor()
+        try:
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table_name,))
+            if not cursor.fetchone():
+                return []
+            cursor.execute(f"SELECT * FROM {table_name} ORDER BY synced_at DESC LIMIT 100")
+            rows = cursor.fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            db.close()
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"Storage unavailable: {str(e)}")

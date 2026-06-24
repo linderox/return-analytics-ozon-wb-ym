@@ -6,3 +6,20 @@ __pycache__/
 .venv/
 venv/
 env/
+
+# Frontend - Vite / Vue / npm
+webapp/frontend/node_modules/
+webapp/frontend/dist/
+webapp/frontend/.vite/
+webapp/frontend/package-lock.json
+webapp/frontend/.env.local
+webapp/frontend/.env.*.local
+webapp/frontend/*.local
+
+# Secrets / credentials
+google-oauth-creds.json
+secrets/
+
+# Generated / OS
+.DS_Store
+Thumbs.db

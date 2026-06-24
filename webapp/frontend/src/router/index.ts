@@ -3,6 +3,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Login from '../views/Login.vue'
 import Billing from '../views/Billing.vue'
 import Admin from '../views/Admin.vue'
+import ResetPassword from '../views/ResetPassword.vue'
 import { supabase } from '../lib/supabase'
 
 const router = createRouter({
@@ -18,6 +19,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/reset-password',
+      name: 'reset-password',
+      component: ResetPassword
     },
     {
       path: '/billing',

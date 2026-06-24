@@ -22,9 +22,15 @@
       <p class="font-mono text-[10px] uppercase tracking-widest text-[#737373]">Загрузка данных...</p>
     </div>
 
+    <div v-else-if="fetchError" class="flex flex-col items-center justify-center py-24 border-2 border-dashed border-[#FCA5A5] bg-[#FFF5F5]">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mb-4"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-[#EF4444] mb-1">Ошибка загрузки</p>
+      <p class="font-mono text-[10px] text-[#A3A3A3]">{{ fetchError }}</p>
+    </div>
+
     <div v-else-if="returns.length === 0" class="flex flex-col items-center justify-center py-24 border-2 border-dashed border-[#E5E5E5] bg-white">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D4D4D4" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mb-4"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-      <p class="font-mono text-[10px] uppercase tracking-widest text-[#A3A3A3]">Данные отсутствуют</p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-[#A3A3A3]">Данных нет — добавьте магазин и запустите синхронизацию</p>
     </div>
 
     <div v-else class="bg-white border border-[#E5E5E5] overflow-hidden">
@@ -56,11 +62,14 @@
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import { supabase } from '../lib/supabase'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const marketplaces = ['ozon', 'wb', 'ym']
 const currentMp = ref('ozon')
 const returns = ref([])
 const loading = ref(false)
+const fetchError = ref('')
 const lastUpdate = ref(new Date().toLocaleString('ru-RU'))
 
 const columns = {
@@ -89,8 +98,13 @@ const translateHeader = (col: string) => headerTranslations[col] || col
 
 const fetchReturns = async () => {
   loading.value = true
+  fetchError.value = ''
   const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return
+  if (!session) {
+    loading.value = false
+    router.push('/login')
+    return
+  }
 
   try {
     const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/returns/${currentMp.value}`, {
@@ -98,8 +112,16 @@ const fetchReturns = async () => {
     })
     returns.value = response.data
     lastUpdate.value = new Date().toLocaleString('ru-RU')
-  } catch (error) {
-    console.error('Error fetching returns:', error)
+  } catch (error: any) {
+    const status = error?.response?.status
+    if (status === 401 || status === 403) {
+      await supabase.auth.signOut()
+      router.push('/login')
+      return
+    }
+    const detail = error?.response?.data?.detail
+    fetchError.value = detail || 'Не удалось подключиться к серверу'
+    returns.value = []
   } finally {
     loading.value = false
   }

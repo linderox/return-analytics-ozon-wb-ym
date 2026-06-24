@@ -1,16 +1,41 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import { ref, onMounted } from 'vue'
+import axios from 'axios'
 import { supabase } from './lib/supabase'
 
 const user = ref(null)
+const isAdmin = ref(false)
 
 onMounted(async () => {
   const { data: { session } } = await supabase.auth.getSession()
   user.value = session?.user || null
 
-  supabase.auth.onAuthStateChange((_event, session) => {
+  if (session) {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile`, {
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      })
+      isAdmin.value = res.data.is_admin === true
+    } catch {
+      isAdmin.value = false
+    }
+  }
+
+  supabase.auth.onAuthStateChange(async (_event, session) => {
     user.value = session?.user || null
+    if (session) {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile`, {
+          headers: { Authorization: `Bearer ${session.access_token}` }
+        })
+        isAdmin.value = res.data.is_admin === true
+      } catch {
+        isAdmin.value = false
+      }
+    } else {
+      isAdmin.value = false
+    }
   })
 })
 
@@ -32,7 +57,7 @@ const logout = async () => {
           <RouterLink to="/billing" class="hover:text-[#D97706] transition-colors flex items-center gap-2">
             Тарифы
           </RouterLink>
-          <RouterLink to="/admin" class="hover:text-[#D97706] transition-colors flex items-center gap-2">
+          <RouterLink v-if="isAdmin" to="/admin" class="hover:text-[#D97706] transition-colors flex items-center gap-2">
             Админ
           </RouterLink>
         </nav>
