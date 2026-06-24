@@ -1,6 +1,14 @@
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from webapp.backend.routers import shops, profile, returns, billing, admin
+
+# Logging configuration
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger("returns-saas")
 
 app = FastAPI(title="Marketplace Returns SaaS")
 
