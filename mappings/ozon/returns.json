@@ -1,0 +1,11 @@
+{
+  "columns": [
+    {"id": "posting_number", "label_ru": "Номер отправления"},
+    {"id": "added_at", "label_ru": "Добавлено"},
+    {"id": "status", "label_ru": "Статус"},
+    {"id": "return_reason", "label_ru": "Причина возврата"},
+    {"id": "offer_id", "label_ru": "Артикул (SKU)"},
+    {"id": "price", "label_ru": "Цена"},
+    {"id": "quantity", "label_ru": "Количество"}
+  ]
+}

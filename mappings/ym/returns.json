@@ -1,0 +1,10 @@
+{
+  "columns": [
+    {"id": "id", "label_ru": "ID возврата"},
+    {"id": "orderId", "label_ru": "Номер заказа"},
+    {"id": "creationDate", "label_ru": "Дата создания"},
+    {"id": "shipmentStatus", "label_ru": "Статус"},
+    {"id": "amount", "label_ru": "Сумма"},
+    {"id": "items", "label_ru": "Товары (SKU)"}
+  ]
+}

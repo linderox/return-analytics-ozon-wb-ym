@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+python-jose[cryptography]
+python-dotenv
+asyncpg
+requests
+supabase
+yookassa

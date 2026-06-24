@@ -1,0 +1,11 @@
+{
+  "columns": [
+    {"id": "srid", "label_ru": "ID возврата"},
+    {"id": "orderDt", "label_ru": "Дата заказа"},
+    {"id": "brand", "label_ru": "Бренд"},
+    {"id": "status", "label_ru": "Статус"},
+    {"id": "reason", "label_ru": "Причина"},
+    {"id": "nmId", "label_ru": "Артикул WB"},
+    {"id": "barcode", "label_ru": "Баркод"}
+  ]
+}
