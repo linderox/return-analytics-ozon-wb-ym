@@ -11,8 +11,6 @@ import AdminShops from '../views/admin/AdminShops.vue'
 import AdminTokens from '../views/admin/AdminTokens.vue'
 import { useAuthStore } from '../stores/auth'
 
-const USER_ROUTES = ['/profile', '/dashboard', '/billing']
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -74,7 +72,7 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _from, next) => {
   const authStore = useAuthStore()
   await authStore.initialize()
 

@@ -90,7 +90,7 @@ import { supabase } from '../lib/supabase'
 
 const plans = { basic: 499, pro: 999 }
 const loading = ref(false)
-const paymentInfo = ref(null)
+const paymentInfo = ref<{ sbp_qr_code: string; confirmation_url: string } | null>(null)
 
 const initiatePayment = async (plan: string) => {
   loading.value = true

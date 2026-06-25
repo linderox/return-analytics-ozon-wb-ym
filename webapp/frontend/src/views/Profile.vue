@@ -607,15 +607,6 @@ async function deleteShop(shopId: string) {
   }
 }
 
-function mpBadgeClass(mp: string) {
-  const map: Record<string, string> = {
-    wb: 'border-[#D97706] text-[#D97706]',
-    ozon: 'border-blue-500 text-blue-600',
-    ym: 'border-purple-500 text-purple-600',
-  }
-  return map[mp] ?? ''
-}
-
 function mpLabel(mp: string) {
   const map: Record<string, string> = { wb: 'WB', ozon: 'Ozon', ym: 'ЯМ' }
   return map[mp] ?? mp.toUpperCase()

@@ -67,18 +67,18 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const marketplaces = ['ozon', 'wb', 'ym']
 const currentMp = ref('ozon')
-const returns = ref([])
+const returns = ref<any[]>([])
 const loading = ref(false)
 const fetchError = ref('')
 const lastUpdate = ref(new Date().toLocaleString('ru-RU'))
 
-const columns = {
+const columns: Record<string, string[]> = {
   wb: ['srid', 'orderDt', 'brand', 'status', 'reason'],
   ozon: ['posting_number', 'added_at', 'status', 'return_reason'],
   ym: ['id', 'orderId', 'returnType', 'shipmentStatus', 'amount']
 }
 
-const headerTranslations = {
+const headerTranslations: Record<string, string> = {
   srid: 'ID Возврата',
   orderDt: 'Дата заказа',
   brand: 'Бренд',
