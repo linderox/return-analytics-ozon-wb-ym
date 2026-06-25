@@ -8,9 +8,8 @@ load_dotenv()
 
 # Standardized Marketplace Credentials
 WB_TOKEN = os.getenv("WB_TOKEN")
-# YM uses Api-Key header.
-YM_API_KEY = os.getenv("YM_CLIENT_SECRET")
-YM_CAMPAIGN_ID = os.getenv("YM_CAMPAIGN_ID")
+YM_API_KEY = os.getenv("YM_TOKEN")
+YM_CAMPAIGN_ID = os.getenv("YM_CLIENT_ID")
 OZON_CLIENT_ID = os.getenv("OZON_CLIENT_ID")
 OZON_API_KEY = os.getenv("OZON_CLIENT_SECRET")
 
@@ -34,7 +33,7 @@ async def test_wb_token_validation():
 async def test_ym_token_validation():
     """Test actual YM token."""
     if not YM_API_KEY or not YM_CAMPAIGN_ID:
-        pytest.skip("YM_CLIENT_SECRET (API Key) or YM_CAMPAIGN_ID not provided")
+        pytest.skip("YM_TOKEN or YM_CLIENT_ID not provided")
 
     url = f"https://api.partner.market.yandex.ru/v2/campaigns/{YM_CAMPAIGN_ID}/returns?limit=1"
     async with httpx.AsyncClient() as http:
@@ -44,11 +43,10 @@ async def test_ym_token_validation():
 @pytest.mark.integration
 @pytest.mark.asyncio
 async def test_ozon_token_validation():
-    """Test Ozon token with dynamic dates (past 21 days)."""
+    """Test Ozon token."""
     if not OZON_CLIENT_ID or not OZON_API_KEY:
         pytest.skip("OZON_CLIENT_ID or OZON_CLIENT_SECRET not provided")
 
-    # Dynamic dates
     now = datetime.now(timezone.utc)
     yesterday = now - timedelta(days=1)
     past_21 = yesterday - timedelta(days=21)
@@ -70,5 +68,4 @@ async def test_ozon_token_validation():
     }
     async with httpx.AsyncClient() as http:
         resp = await http.post(url, json=payload, headers=headers)
-        # Accept 200 or any non-auth error as 'token accepted'
         assert resp.status_code not in (401, 403)

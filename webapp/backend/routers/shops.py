@@ -23,13 +23,13 @@ CREDENTIAL_FIELDS = {
         "ozon_performance_client_id",
         "ozon_performance_client_secret",
     },
-    "ym": {"ym_client_id", "ym_client_secret", "ym_campaign_id"},
+    "ym": {"ym_client_id", "ym_token"},
 }
 
 REQUIRED_CREDENTIALS = {
     "wb": {"wb_token"},
     "ozon": {"ozon_client_id", "ozon_client_secret"},
-    "ym": {"ym_client_id", "ym_campaign_id"},
+    "ym": {"ym_client_id", "ym_token"},
 }
 
 
@@ -43,8 +43,7 @@ class CreateShopRequest(BaseModel):
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
     ym_client_id: Optional[str] = None
-    ym_client_secret: Optional[str] = None
-    ym_campaign_id: Optional[str] = None
+    ym_token: Optional[str] = None
     status_filter: Optional[List[str]] = None
     schema_filter: Optional[List[str]] = None
 
@@ -56,8 +55,7 @@ class UpdateShopRequest(BaseModel):
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
     ym_client_id: Optional[str] = None
-    ym_client_secret: Optional[str] = None
-    ym_campaign_id: Optional[str] = None
+    ym_token: Optional[str] = None
     status_filter: Optional[List[str]] = None
     schema_filter: Optional[List[str]] = None
 

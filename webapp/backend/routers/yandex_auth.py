@@ -7,7 +7,7 @@ from core.db.database import get_supabase_client
 
 router = APIRouter()
 
-YANDEX_CLIENT_ID = os.getenv("OAUTH_YANDEX_CLIENT_ID")
+YANDEX_CLIENT_ID = os.getenv("YANDEX_CLIENT_ID")
 YANDEX_CLIENT_SECRET = os.getenv("OAUTH_YANDEX_CLIENT_SECRET")
 YANDEX_REDIRECT_URI = os.getenv("YANDEX_REDIRECT_URI", "http://localhost:8000/api/auth/yandex/callback")
 SUPABASE_URL = os.getenv("SUPABASE_URL")

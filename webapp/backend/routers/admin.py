@@ -24,7 +24,7 @@ MARKETPLACE_FULFILLMENT = {
 CREDENTIAL_FIELDS = {
     "wb": ["wb_token"],
     "ozon": ["ozon_client_id", "ozon_client_secret", "ozon_performance_client_id", "ozon_performance_client_secret"],
-    "ym": ["ym_client_id", "ym_client_secret", "ym_campaign_id"],
+    "ym": ["ym_client_id", "ym_token"],
 }
 
 _ADMIN_HEADERS = {
@@ -208,8 +208,7 @@ class CreateShopRequest(BaseModel):
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
     ym_client_id: Optional[str] = None
-    ym_client_secret: Optional[str] = None
-    ym_campaign_id: Optional[str] = None
+    ym_token: Optional[str] = None
 
 
 class UpdateCredentialsRequest(BaseModel):
@@ -219,8 +218,7 @@ class UpdateCredentialsRequest(BaseModel):
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
     ym_client_id: Optional[str] = None
-    ym_client_secret: Optional[str] = None
-    ym_campaign_id: Optional[str] = None
+    ym_token: Optional[str] = None
 
 
 @router.post("/user/{user_id}/shops")
