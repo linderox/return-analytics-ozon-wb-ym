@@ -4,7 +4,7 @@ from core.db.database import ensure_returns_table, get_sqlite_conn
 
 async def run_ym_returns(api_key, campaign_id, user_id):
     from webapp.backend.services.sync_ym import sync_ym_returns
-    shop = {"ym_client_id": api_key, "ym_campaign_id": campaign_id}
+    shop = {"ym_token": api_key, "ym_campaign_id": campaign_id}
     result = await sync_ym_returns(shop, user_id, None)
     print(f"YM sync complete: {result}")
 

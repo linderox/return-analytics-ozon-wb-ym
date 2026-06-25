@@ -18,13 +18,13 @@ MARKETPLACE_FULFILLMENT = {
 CREDENTIAL_FIELDS = {
     "wb": {"wb_token"},
     "ozon": {"ozon_client_id", "ozon_client_secret", "ozon_performance_client_id", "ozon_performance_client_secret"},
-    "ym": {"ym_client_id", "ym_client_secret", "ym_campaign_id"},
+    "ym": {"ym_token", "ym_campaign_id"},
 }
 
 REQUIRED_CREDENTIALS = {
     "wb": {"wb_token"},
     "ozon": {"ozon_client_id", "ozon_client_secret"},
-    "ym": {"ym_client_id", "ym_campaign_id"},
+    "ym": {"ym_campaign_id"},
 }
 
 
@@ -37,11 +37,11 @@ class CreateShopRequest(BaseModel):
     ozon_client_secret: Optional[str] = None
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
-    ym_client_id: Optional[str] = None
-    ym_client_secret: Optional[str] = None
+    ym_token: Optional[str] = None
     ym_campaign_id: Optional[str] = None
     status_filter: Optional[List[str]] = None
     schema_filter: Optional[List[str]] = None
+    google_sheet_id: Optional[str] = None
 
 
 class UpdateShopRequest(BaseModel):
@@ -50,11 +50,11 @@ class UpdateShopRequest(BaseModel):
     ozon_client_secret: Optional[str] = None
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
-    ym_client_id: Optional[str] = None
-    ym_client_secret: Optional[str] = None
+    ym_token: Optional[str] = None
     ym_campaign_id: Optional[str] = None
     status_filter: Optional[List[str]] = None
     schema_filter: Optional[List[str]] = None
+    google_sheet_id: Optional[str] = None
 
 
 @router.get("/")
@@ -106,6 +106,8 @@ async def add_shop(body: CreateShopRequest, user_id: str = Depends(get_current_u
         insert_data["status_filter"] = body.status_filter
     if body.schema_filter:
         insert_data["schema_filter"] = body.schema_filter
+    if body.google_sheet_id:
+        insert_data["google_sheet_id"] = body.google_sheet_id
 
     client = await get_supabase_client()
     result = await client.table('shops').insert(insert_data).execute()
@@ -123,7 +125,7 @@ async def update_shop(shop_id: str, body: UpdateShopRequest, user_id: str = Depe
         raise HTTPException(status_code=404, detail="Shop not found")
 
     marketplace = shop_result.data['marketplace']
-    allowed = CREDENTIAL_FIELDS[marketplace] | {"status_filter", "schema_filter"}
+    allowed = CREDENTIAL_FIELDS[marketplace] | {"status_filter", "schema_filter", "google_sheet_id"}
     updates = {k: v for k, v in body.model_dump(exclude_none=True).items() if k in allowed}
 
     if not updates:

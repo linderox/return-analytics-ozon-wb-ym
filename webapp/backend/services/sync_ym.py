@@ -4,7 +4,7 @@ from core.db.database import ensure_returns_table, get_sqlite_conn
 import json
 
 async def sync_ym_returns(shop: dict, user_id: str):
-    api_key = shop.get("ym_client_id")
+    api_key = shop.get("ym_token")
     campaign_id = shop.get("ym_campaign_id")
     days = 60
 
