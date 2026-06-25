@@ -82,6 +82,10 @@ The frontend runs at **http://localhost:5173**.
 
 The backend auto-runs schema migrations on startup (`lifespan` in `main.py`). No manual migration steps needed on a fresh Supabase project — tables are created automatically.
 
+> **Note — Schema Update**
+>
+> If you are working with an existing Supabase project, you may need to update your table schema to support new marketplace credentials and filters. Use the SQL script provided in `docs/K_fix_schema.sql`.
+
 For the first admin user: set `is_admin = true` in the `public.profiles` table via the Supabase dashboard.
 
 ## Project Structure

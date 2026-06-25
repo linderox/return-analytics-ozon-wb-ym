@@ -9,6 +9,9 @@ load_dotenv()
 
 logger = logging.getLogger("database")
 
+# IMPORTANT: Supabase direct PostgreSQL ports (5432, 6543) are often blocked by ISPs.
+# This application uses the Supabase REST API (over HTTPS port 443) which works everywhere.
+# Do NOT use DATABASE_URL for application database calls.
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 SQLITE_DB_PATH = "returns_history.db"

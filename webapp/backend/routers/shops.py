@@ -17,14 +17,19 @@ MARKETPLACE_FULFILLMENT = {
 
 CREDENTIAL_FIELDS = {
     "wb": {"wb_token"},
-    "ozon": {"ozon_client_id", "ozon_client_secret", "ozon_performance_client_id", "ozon_performance_client_secret"},
-    "ym": {"ym_token", "ym_campaign_id"},
+    "ozon": {
+        "ozon_client_id",
+        "ozon_client_secret",
+        "ozon_performance_client_id",
+        "ozon_performance_client_secret",
+    },
+    "ym": {"ym_campaign_id", "ym_token"},
 }
 
 REQUIRED_CREDENTIALS = {
     "wb": {"wb_token"},
     "ozon": {"ozon_client_id", "ozon_client_secret"},
-    "ym": {"ym_campaign_id"},
+    "ym": {"ym_campaign_id", "ym_token"},
 }
 
 
@@ -37,8 +42,8 @@ class CreateShopRequest(BaseModel):
     ozon_client_secret: Optional[str] = None
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
-    ym_token: Optional[str] = None
     ym_campaign_id: Optional[str] = None
+    ym_token: Optional[str] = None
     status_filter: Optional[List[str]] = None
     schema_filter: Optional[List[str]] = None
     google_sheet_id: Optional[str] = None
@@ -50,8 +55,8 @@ class UpdateShopRequest(BaseModel):
     ozon_client_secret: Optional[str] = None
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
-    ym_token: Optional[str] = None
     ym_campaign_id: Optional[str] = None
+    ym_token: Optional[str] = None
     status_filter: Optional[List[str]] = None
     schema_filter: Optional[List[str]] = None
     google_sheet_id: Optional[str] = None
@@ -96,6 +101,8 @@ async def add_shop(body: CreateShopRequest, user_id: str = Depends(get_current_u
 
     if body.fulfillment_models:
         insert_data["fulfillment_models"] = body.fulfillment_models
+    else:
+        insert_data["fulfillment_models"] = []
 
     for field in allowed_creds:
         val = body_dict.get(field)

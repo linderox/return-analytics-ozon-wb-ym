@@ -58,6 +58,8 @@ async def get_current_user(request: Request) -> str:
         if key is None:
             raise HTTPException(status_code=503, detail="No suitable key found in JWKS")
 
+        # For local testing, we might want a fallback secret if JWKS is not used,
+        # but here we strictly follow Supabase JWKS.
         payload = jwt.decode(token, key, algorithms=[ALGORITHM], options={"verify_aud": False})
         user_id = payload.get("sub")
         email = payload.get("email")

@@ -218,8 +218,9 @@ class UpdateCredentialsRequest(BaseModel):
     ozon_client_secret: Optional[str] = None
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
-    ym_token: Optional[str] = None
     ym_campaign_id: Optional[str] = None
+    ym_token: Optional[str] = None
+
 
 
 @router.post("/user/{user_id}/shops")
@@ -253,6 +254,12 @@ async def admin_create_shop(user_id: str, body: CreateShopRequest, _: str = Depe
     }
     if body.fulfillment_models:
         insert_data['fulfillment_models'] = body.fulfillment_models
+    else:
+        insert_data['fulfillment_models'] = []
+
+    insert_data['status_filter'] = []
+    insert_data['schema_filter'] = []
+    
     if body.google_sheet_id:
         insert_data['google_sheet_id'] = body.google_sheet_id
 
