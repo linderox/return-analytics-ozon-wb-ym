@@ -52,7 +52,7 @@ function fetchYmReturns() {
   }
   // ------------------
 
-  // Считываем текущие данные из таблицы (предотвращение дублей)
+  // Считываем текущие данные из таблицы
   const existingRange = sheet.getDataRange();
   let existingValues = existingRange.getValues();
 
@@ -64,44 +64,74 @@ function fetchYmReturns() {
     existingValues = [headers];
   }
 
-  // Создаем карту существующих записей по ID возврата (Колонка А - индекс 0)
+  // existingValues[0] = заголовок (строка 1 в листе)
+  // existingValues[i] = данные (строка i+1 в листе)
   const existingMap = {};
   for (let i = 1; i < existingValues.length; i++) {
     const returnId = existingValues[i][0];
     if (returnId) {
-      existingMap[returnId] = i;
+      existingMap[String(returnId)] = { sheetRow: i + 1, values: existingValues[i] };
     }
   }
 
-  let updatedCount = 0;
-  let addedCount = 0;
+  // updateDate меняется каждый раз — исключаем из сравнения, чтобы не было лишнего шума
+  const SKIP_COMPARE = new Set(['updateDate']);
 
-  // Распределяем полученные данные по строкам
+  const newRows = [];
+  let updatedCount = 0;
+
   data.forEach(item => {
-    const rowValues = COLUMNS_CONFIG.map(col => {
-      let val = col.getValue(item);
+    const newRowValues = COLUMNS_CONFIG.map(col => {
+      const val = col.getValue(item);
       return (val === null || val === undefined) ? "" : val;
     });
+    const id = String(item.id);
 
-    const returnId = item.id;
-
-    if (existingMap.hasOwnProperty(returnId)) {
-      const rowIndex = existingMap[returnId];
-      existingValues[rowIndex] = rowValues;
-      updatedCount++;
+    if (!existingMap.hasOwnProperty(id)) {
+      // Новая запись — добавим в конец
+      newRows.push(newRowValues);
     } else {
-      existingValues.push(rowValues);
-      existingMap[returnId] = existingValues.length - 1;
-      addedCount++;
+      // Существующая запись — сравниваем поля (кроме updateDate)
+      const existing = existingMap[id];
+      const changedFields = COLUMNS_CONFIG
+        .map((col, idx) => {
+          if (SKIP_COMPARE.has(col.key)) return null;
+          const apiStr = String(newRowValues[idx]);
+          const existStr = (existing.values[idx] === null || existing.values[idx] === undefined)
+            ? "" : String(existing.values[idx]);
+          return apiStr !== existStr ? `${col.name}: "${existStr}" → "${apiStr}"` : null;
+        })
+        .filter(Boolean);
+
+      if (changedFields.length > 0) {
+        // Перезаписываем строку и подсвечиваем жёлтым
+        const rowRange = sheet.getRange(existing.sheetRow, 1, 1, COLUMNS_CONFIG.length);
+        rowRange.setValues([newRowValues]);
+        rowRange.setBackground('#fff2cc');
+        updatedCount++;
+        const logMsg = `[YM] Обновлена запись ID=${item.id}: ${changedFields.join(' | ')}`;
+        Logger.log(logMsg);
+        appendLog(logMsg, '', '');
+      }
     }
   });
 
-  // Записываем результат обратно в таблицу
-  sheet.clearContents();
-  sheet.getRange(1, 1, existingValues.length, COLUMNS_CONFIG.length).setValues(existingValues);
+  // Дописываем новые строки в конец таблицы
+  if (newRows.length > 0) {
+    const lastRow = sheet.getLastRow();
+    const newRange = sheet.getRange(lastRow + 1, 1, newRows.length, COLUMNS_CONFIG.length);
+    newRange.setValues(newRows);
+    newRange.setBackground('#efefef'); // серый фон для новых строк
+  }
 
-  Logger.log(`Фильтр "PICKED" применен. Добавлено новых: ${addedCount}. Обновлено существующих: ${updatedCount}.`);
-  appendLog(`[YM] Завершено — добавлено: ${addedCount}, обновлено: ${updatedCount}`, '', '');
+  if (newRows.length === 0 && updatedCount === 0) {
+    Logger.log('Нет ни новых, ни изменившихся записей.');
+    appendLog('[YM] Нет изменений', '', '');
+    return;
+  }
+
+  Logger.log(`Добавлено новых: ${newRows.length}. Обновлено изменившихся: ${updatedCount}.`);
+  appendLog(`[YM] Добавлено новых: ${newRows.length}, обновлено: ${updatedCount}`, '', '');
 }
 
 // Вспомогательная функция для запроса данных из Яндекс Маркета (с пагинацией)

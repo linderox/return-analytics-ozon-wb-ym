@@ -24,7 +24,7 @@ MARKETPLACE_FULFILLMENT = {
 CREDENTIAL_FIELDS = {
     "wb": ["wb_token"],
     "ozon": ["ozon_client_id", "ozon_client_secret", "ozon_performance_client_id", "ozon_performance_client_secret"],
-    "ym": ["ym_client_id", "ym_token"],
+    "ym": ["ym_token", "ym_campaign_id"],
 }
 
 _ADMIN_HEADERS = {
@@ -207,8 +207,9 @@ class CreateShopRequest(BaseModel):
     ozon_client_secret: Optional[str] = None
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
-    ym_client_id: Optional[str] = None
     ym_token: Optional[str] = None
+    ym_campaign_id: Optional[str] = None
+    google_sheet_id: Optional[str] = None
 
 
 class UpdateCredentialsRequest(BaseModel):
@@ -217,8 +218,9 @@ class UpdateCredentialsRequest(BaseModel):
     ozon_client_secret: Optional[str] = None
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
-    ym_client_id: Optional[str] = None
+    ym_campaign_id: Optional[str] = None
     ym_token: Optional[str] = None
+
 
 
 @router.post("/user/{user_id}/shops")
@@ -257,6 +259,9 @@ async def admin_create_shop(user_id: str, body: CreateShopRequest, _: str = Depe
 
     insert_data['status_filter'] = []
     insert_data['schema_filter'] = []
+    
+    if body.google_sheet_id:
+        insert_data['google_sheet_id'] = body.google_sheet_id
 
     client = await get_supabase_client()
     result = await client.table('shops').insert(insert_data).execute()
