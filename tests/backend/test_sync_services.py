@@ -46,7 +46,7 @@ async def test_sync_wb_mock():
             await ensure_returns_table(user_id, "wb")
 
         with patch("webapp.backend.services.sync_wb.get_sqlite_conn", return_value=wrapper):
-            result = await sync_wb_returns(shop, user_id, None)
+            result = await sync_wb_returns(shop, user_id)
             assert result["added"] == 1
 
             cursor = test_db.cursor()
