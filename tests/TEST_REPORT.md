@@ -1,10 +1,5 @@
 # Marketplace Returns SaaS - Test Execution Report
-Generated on: Thu Jun 25 05:51:48 UTC 2026
-
-## Summary
-- **Unit Tests**: PASSED (Using Mocks)
-- **Marketplace Integration**: PASSED (Real Tokens)
-- **Supabase Integration**: PARTIAL (Connection verified, loop issues in cleanup)
+Generated on: Thu Jun 25 06:18:09 UTC 2026
 
 ## 1. Unit Tests Results
 ```text
@@ -80,7 +75,7 @@ tests/test_tokens.py:29: AssertionError
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== short test summary info ============================
 FAILED tests/test_tokens.py::test_wb_token_validation - assert 401 in (200, 400)
-==================== 1 failed, 2 passed, 1 warning in 2.90s ====================
+==================== 1 failed, 2 passed, 1 warning in 2.85s ====================
 ```
 
 ## 3. Database Schema Verification
@@ -200,5 +195,5 @@ tests/test_supabase_tables.py::test_profiles_table_structure
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== short test summary info ============================
 FAILED tests/test_supabase_tables.py::test_shops_table_structure - RuntimeErr...
-=================== 1 failed, 2 passed, 3 warnings in 1.42s ====================
+=================== 1 failed, 2 passed, 3 warnings in 1.89s ====================
 ```

@@ -9,7 +9,7 @@ load_dotenv()
 # Standardized Marketplace Credentials
 WB_TOKEN = os.getenv("WB_TOKEN")
 YM_API_KEY = os.getenv("YM_TOKEN")
-YM_CAMPAIGN_ID = os.getenv("YM_CLIENT_ID")
+YM_CAMPAIGN_ID = os.getenv("YM_CAMPAIGN_ID")
 OZON_CLIENT_ID = os.getenv("OZON_CLIENT_ID")
 OZON_API_KEY = os.getenv("OZON_CLIENT_SECRET")
 
@@ -33,7 +33,7 @@ async def test_wb_token_validation():
 async def test_ym_token_validation():
     """Test actual YM token."""
     if not YM_API_KEY or not YM_CAMPAIGN_ID:
-        pytest.skip("YM_TOKEN or YM_CLIENT_ID not provided")
+        pytest.skip("YM_TOKEN or YM_CAMPAIGN_ID not provided")
 
     url = f"https://api.partner.market.yandex.ru/v2/campaigns/{YM_CAMPAIGN_ID}/returns?limit=1"
     async with httpx.AsyncClient() as http:

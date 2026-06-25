@@ -24,7 +24,7 @@ MARKETPLACE_FULFILLMENT = {
 CREDENTIAL_FIELDS = {
     "wb": ["wb_token"],
     "ozon": ["ozon_client_id", "ozon_client_secret", "ozon_performance_client_id", "ozon_performance_client_secret"],
-    "ym": ["ym_client_id", "ym_token"],
+    "ym": ["ym_campaign_id", "ym_token"],
 }
 
 _ADMIN_HEADERS = {
@@ -207,7 +207,7 @@ class CreateShopRequest(BaseModel):
     ozon_client_secret: Optional[str] = None
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
-    ym_client_id: Optional[str] = None
+    ym_campaign_id: Optional[str] = None
     ym_token: Optional[str] = None
 
 
@@ -217,7 +217,7 @@ class UpdateCredentialsRequest(BaseModel):
     ozon_client_secret: Optional[str] = None
     ozon_performance_client_id: Optional[str] = None
     ozon_performance_client_secret: Optional[str] = None
-    ym_client_id: Optional[str] = None
+    ym_campaign_id: Optional[str] = None
     ym_token: Optional[str] = None
 
 

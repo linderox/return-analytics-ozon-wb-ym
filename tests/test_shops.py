@@ -30,13 +30,13 @@ def test_create_ym_shop_success(client, authenticated_user, mock_supabase):
     payload = {
         "name": "My YM Shop",
         "marketplace": "ym",
-        "ym_client_id": "campaign-id",
+        "ym_campaign_id": "campaign-id",
         "ym_token": "api-key"
     }
     response = client.post("/api/shops/", json=payload)
     assert response.status_code == 200, response.text
     data = response.json()
-    assert data["ym_client_id"] == "campaign-id"
+    assert data["ym_campaign_id"] == "campaign-id"
     assert data["ym_token"] == "api-key"
 
 def test_create_shop_invalid_marketplace(client, authenticated_user):
