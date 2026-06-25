@@ -254,6 +254,11 @@ async def admin_create_shop(user_id: str, body: CreateShopRequest, _: str = Depe
     }
     if body.fulfillment_models:
         insert_data['fulfillment_models'] = body.fulfillment_models
+    else:
+        insert_data['fulfillment_models'] = []
+
+    insert_data['status_filter'] = []
+    insert_data['schema_filter'] = []
 
     client = await get_supabase_client()
     result = await client.table('shops').insert(insert_data).execute()

@@ -17,7 +17,12 @@ MARKETPLACE_FULFILLMENT = {
 
 CREDENTIAL_FIELDS = {
     "wb": {"wb_token"},
-    "ozon": {"ozon_client_id", "ozon_client_secret", "ozon_performance_client_id", "ozon_performance_client_secret"},
+    "ozon": {
+        "ozon_client_id",
+        "ozon_client_secret",
+        "ozon_performance_client_id",
+        "ozon_performance_client_secret",
+    },
     "ym": {"ym_client_id", "ym_client_secret", "ym_campaign_id"},
 }
 
@@ -96,16 +101,16 @@ async def add_shop(body: CreateShopRequest, user_id: str = Depends(get_current_u
 
     if body.fulfillment_models:
         insert_data["fulfillment_models"] = body.fulfillment_models
+    else:
+        insert_data["fulfillment_models"] = []
 
     for field in allowed_creds:
         val = body_dict.get(field)
         if val:
             insert_data[field] = val
 
-    if body.status_filter:
-        insert_data["status_filter"] = body.status_filter
-    if body.schema_filter:
-        insert_data["schema_filter"] = body.schema_filter
+    insert_data["status_filter"] = body.status_filter if body.status_filter else []
+    insert_data["schema_filter"] = body.schema_filter if body.schema_filter else []
 
     client = await get_supabase_client()
     result = await client.table('shops').insert(insert_data).execute()
