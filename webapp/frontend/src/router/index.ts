@@ -9,6 +9,7 @@ import AdminDashboard from '../views/admin/AdminDashboard.vue'
 import AdminUsers from '../views/admin/AdminUsers.vue'
 import AdminShops from '../views/admin/AdminShops.vue'
 import AdminTokens from '../views/admin/AdminTokens.vue'
+import AdminReturns from '../views/admin/AdminReturns.vue'
 import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
@@ -66,6 +67,11 @@ const router = createRouter({
           path: 'tokens',
           name: 'admin-tokens',
           component: AdminTokens,
+        },
+        {
+          path: 'returns',
+          name: 'admin-returns',
+          component: AdminReturns,
         },
       ]
     }

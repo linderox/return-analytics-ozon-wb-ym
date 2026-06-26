@@ -10,7 +10,7 @@
       <p class="text-[#737373] text-sm text-center mb-8 font-mono">returns-analytics-v2.0.4</p>
 
       <!-- Tab switcher -->
-      <div class="flex border-2 border-[#1A1A1A] mb-6">
+      <div class="flex border border-[#E5E5E5] mb-6">
         <button
           @click="activeTab = 'email'"
           :class="activeTab === 'email' ? 'bg-[#1A1A1A] text-white' : 'bg-white text-[#1A1A1A] hover:bg-[#FBF0D3]'"
@@ -42,7 +42,7 @@
               v-model="email"
               type="email"
               placeholder="you@example.com"
-              class="w-full border-2 border-[#1A1A1A] px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#D97706]"
+              class="w-full border border-[#E5E5E5] px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#D97706]"
             />
           </div>
           <div>
@@ -51,7 +51,7 @@
               v-model="password"
               type="password"
               placeholder="••••••••"
-              class="w-full border-2 border-[#1A1A1A] px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#D97706]"
+              class="w-full border border-[#E5E5E5] px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#D97706]"
               @keyup.enter="loginWithEmail"
             />
           </div>
@@ -81,7 +81,7 @@
               v-model="email"
               type="email"
               placeholder="you@example.com"
-              class="w-full border-2 border-[#1A1A1A] px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#D97706]"
+              class="w-full border border-[#E5E5E5] px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#D97706]"
               @keyup.enter="sendReset"
             />
           </div>
@@ -110,7 +110,7 @@
       <div v-if="activeTab === 'google'">
         <button
           @click="loginWithGoogle"
-          class="w-full py-3 px-4 border-2 border-[#1A1A1A] flex items-center justify-center gap-3 hover:bg-[#FBF0D3] transition-colors font-bold uppercase text-xs tracking-widest"
+          class="w-full py-3 px-4 border border-[#E5E5E5] flex items-center justify-center gap-3 hover:bg-[#FBF0D3] transition-colors font-bold uppercase text-xs tracking-widest"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48">
             <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>

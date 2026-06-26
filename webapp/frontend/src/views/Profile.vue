@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-8">
-    <div class="border-b border-[#1A1A1A] pb-4">
+    <div class="border-b border-[#E5E5E5] pb-4">
       <h1 class="text-4xl font-black uppercase tracking-tighter">Профиль</h1>
       <p class="text-[#737373] font-mono text-xs mt-1">НАСТРОЙКИ АККАУНТА</p>
     </div>
@@ -15,11 +15,11 @@
       <div class="lg:col-span-2 space-y-6">
 
         <!-- Account card -->
-        <div class="bg-white border-2 border-[#1A1A1A] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
+        <div class="bg-white border border-[#E5E5E5] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
           <div class="flex justify-between items-start mb-6">
             <h2 class="text-sm font-black uppercase tracking-tight">Личные данные</h2>
             <button v-if="!editing" @click="startEdit"
-              class="font-mono text-[10px] uppercase tracking-widest border border-[#1A1A1A] px-3 py-1 hover:bg-[#1A1A1A] hover:text-white transition-all">
+              class="font-mono text-[10px] uppercase tracking-widest border border-[#E5E5E5] px-3 py-1 hover:bg-[#1A1A1A] hover:text-white transition-all">
               Редактировать
             </button>
           </div>
@@ -31,14 +31,14 @@
             <div>
               <label class="block text-[10px] font-mono uppercase tracking-widest text-[#737373] mb-1">ФИО</label>
               <input v-if="editing" v-model="editForm.fio" type="text"
-                class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]"
+                class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]"
                 placeholder="Иванов Иван Иванович" />
               <p v-else class="font-mono text-sm">{{ profile?.fio || '—' }}</p>
             </div>
             <div>
               <label class="block text-[10px] font-mono uppercase tracking-widest text-[#737373] mb-1">Телефон</label>
               <input v-if="editing" v-model="editForm.phone" type="tel"
-                class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]"
+                class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]"
                 placeholder="+7 900 000-00-00" />
               <p v-else class="font-mono text-sm">{{ profile?.phone || '—' }}</p>
             </div>
@@ -48,7 +48,7 @@
                 {{ saving ? 'Сохранение...' : 'Сохранить' }}
               </button>
               <button @click="cancelEdit"
-                class="font-mono text-[10px] uppercase tracking-widest border border-[#1A1A1A] px-4 py-2 hover:bg-[#F5F5F5] transition-all">
+                class="font-mono text-[10px] uppercase tracking-widest border border-[#E5E5E5] px-4 py-2 hover:bg-[#F5F5F5] transition-all">
                 Отмена
               </button>
               <span v-if="saveError" class="text-red-600 font-mono text-xs">{{ saveError }}</span>
@@ -58,7 +58,7 @@
         </div>
 
         <!-- Shops card -->
-        <div class="bg-white border-2 border-[#1A1A1A] shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
+        <div class="bg-white border border-[#E5E5E5] shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
           <div class="px-6 py-4 border-b border-[#E5E5E5] flex items-center justify-between">
             <div>
               <h2 class="text-sm font-black uppercase tracking-tight">Мои магазины</h2>
@@ -112,19 +112,19 @@
 
       <!-- Right: plan & status -->
       <div class="space-y-6">
-        <div class="bg-white border-2 border-[#1A1A1A] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
+        <div class="bg-white border border-[#E5E5E5] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
           <h2 class="text-sm font-black uppercase tracking-tight mb-4">Тариф</h2>
           <div class="flex items-center gap-3">
             <span class="font-mono text-xl font-black uppercase">{{ profile?.plan || 'free' }}</span>
             <span class="font-mono text-[10px] uppercase tracking-widest bg-[#FBF0D3] text-[#D97706] px-2 py-0.5">Активен</span>
           </div>
           <RouterLink to="/billing"
-            class="mt-4 block w-full text-center font-mono text-[10px] uppercase tracking-widest border border-[#1A1A1A] py-2 hover:bg-[#1A1A1A] hover:text-white transition-all">
+            class="mt-4 block w-full text-center font-mono text-[10px] uppercase tracking-widest border border-[#E5E5E5] py-2 hover:bg-[#1A1A1A] hover:text-white transition-all">
             Изменить тариф
           </RouterLink>
         </div>
 
-        <div class="bg-white border-2 border-[#1A1A1A] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
+        <div class="bg-white border border-[#E5E5E5] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
           <h2 class="text-sm font-black uppercase tracking-tight mb-4">Аккаунт</h2>
           <div class="space-y-2">
             <div class="flex justify-between items-center">
@@ -150,10 +150,10 @@
   <Teleport to="body">
     <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div class="absolute inset-0 bg-black/60" @click="closeAddModal"></div>
-      <div class="relative bg-white border-2 border-[#1A1A1A] w-full max-w-lg shadow-[12px_12px_0px_0px_rgba(0,0,0,0.15)] max-h-[90vh] flex flex-col">
+      <div class="relative bg-white border border-[#E5E5E5] w-full max-w-lg shadow-[12px_12px_0px_0px_rgba(0,0,0,0.15)] max-h-[90vh] flex flex-col">
 
         <!-- Modal header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b-2 border-[#1A1A1A]">
+        <div class="flex items-center justify-between px-6 py-4 border-b-2 border-[#E5E5E5]">
           <div>
             <h3 class="font-black uppercase text-sm tracking-tight">Добавить магазин</h3>
             <p class="font-mono text-[10px] text-[#737373] mt-0.5">Шаг {{ addStep }} из 3</p>
@@ -179,8 +179,8 @@
                   @click="selectMarketplace(mp.value)"
                   class="border-2 py-4 text-center transition-all font-mono text-xs font-black uppercase tracking-wider flex flex-col items-center gap-2"
                   :class="addForm.marketplace === mp.value
-                    ? 'border-[#1A1A1A] bg-[#1A1A1A] text-white'
-                    : 'border-[#E5E5E5] hover:border-[#1A1A1A] text-[#1A1A1A]'">
+                    ? 'border-[#E5E5E5] bg-[#1A1A1A] text-white'
+                    : 'border-[#E5E5E5] hover:border-[#E5E5E5] text-[#1A1A1A]'">
                   <span :style="mpLogoStyle(mp.value, 28)">{{ mp.label === 'Ozon' ? 'O' : mp.label }}</span>
                   {{ mp.label }}
                 </button>
@@ -190,7 +190,7 @@
             <div>
               <label class="block text-[10px] font-mono uppercase tracking-widest text-[#737373] mb-1">Название магазина *</label>
               <input v-model="addForm.name" type="text"
-                class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]"
+                class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]"
                 placeholder="Мой магазин" />
             </div>
 
@@ -225,7 +225,7 @@
                   API Токен *
                 </label>
                 <input v-model="addForm.wb_token" type="password" autocomplete="off"
-                  class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-xs focus:outline-none focus:border-[#D97706]"
+                  class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-xs focus:outline-none focus:border-[#D97706]"
                   placeholder="eyJhbGci..." />
                 <p class="font-mono text-[10px] text-[#A3A3A3] mt-1">
                   Личный кабинет WB → Настройки → Доступ к API
@@ -284,7 +284,7 @@
                     OAuth Токен / API Ключ *
                   </label>
                   <input v-model="addForm.ym_client_id" type="password" autocomplete="off"
-                    class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-xs focus:outline-none focus:border-[#D97706]"
+                    class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-xs focus:outline-none focus:border-[#D97706]"
                     placeholder="AQAAAAAB..." />
                   <p class="font-mono text-[10px] text-[#A3A3A3] mt-1">
                     Яндекс.OAuth → выдать токен для приложения партнёра
@@ -295,7 +295,7 @@
                     ID кампании (бизнеса) *
                   </label>
                   <input v-model="addForm.ym_campaign_id" type="text" autocomplete="off"
-                    class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-xs focus:outline-none focus:border-[#D97706]"
+                    class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-xs focus:outline-none focus:border-[#D97706]"
                     placeholder="12345678" />
                   <p class="font-mono text-[10px] text-[#A3A3A3] mt-1">
                     Личный кабинет Яндекс.Маркет → URL кабинета содержит ID
@@ -339,7 +339,7 @@
         <!-- Modal footer -->
         <div class="px-6 py-4 border-t border-[#E5E5E5] flex items-center justify-between">
           <button v-if="addStep > 1" @click="addStep--"
-            class="font-mono text-[10px] uppercase tracking-widest border border-[#1A1A1A] px-4 py-2 hover:bg-[#F5F5F5] transition-all">
+            class="font-mono text-[10px] uppercase tracking-widest border border-[#E5E5E5] px-4 py-2 hover:bg-[#F5F5F5] transition-all">
             ← Назад
           </button>
           <div v-else></div>

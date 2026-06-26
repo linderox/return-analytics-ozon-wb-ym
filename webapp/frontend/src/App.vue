@@ -29,7 +29,7 @@ onMounted(() => {
         </nav>
         <div class="flex items-center space-x-6">
           <span class="text-[#737373] lowercase">{{ authStore.user?.email }}</span>
-          <button @click="authStore.logout()" class="border border-[#1A1A1A] px-3 py-1 hover:bg-[#1A1A1A] hover:text-white transition-all active:scale-95">
+          <button @click="authStore.logout()" class="border border-[#E5E5E5] px-3 py-1 hover:bg-[#1A1A1A] hover:text-white transition-all active:scale-95">
             Выйти
           </button>
         </div>

@@ -3,6 +3,10 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from webapp.backend.auth import get_current_user
 from core.db.database import get_supabase_client, get_sqlite_conn
+from webapp.backend.services.sync_wb import sync_wb_returns
+from webapp.backend.services.sync_ozon import sync_ozon_returns
+from webapp.backend.services.sync_ym import sync_ym_returns
+from datetime import datetime, timezone
 import re
 import os
 import httpx
@@ -14,6 +18,9 @@ SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
 
 VALID_MARKETPLACES = {"wb", "ozon", "ym"}
 VALID_PLANS = {"free", "basic", "pro"}
+
+DATE_COL   = {"wb": "order_dt", "ozon": "return_date",  "ym": "creation_date"}
+STATUS_COL = {"wb": "status",   "ozon": "status",        "ym": "shipment_status"}
 
 MARKETPLACE_FULFILLMENT = {
     "wb": {"FBS", "FBW"},
@@ -62,6 +69,83 @@ async def check_admin(user_id: str = Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="Admin access required")
     print(f"[check_admin] GRANTED — user_id={user_id!r}")
     return user_id
+
+
+@router.get("/{marketplace}/returns")
+async def admin_get_returns(
+    marketplace: str,
+    shop_id:   Optional[str] = None,
+    user_id:   Optional[str] = None,
+    date_from: Optional[str] = None,
+    date_to:   Optional[str] = None,
+    status:    Optional[str] = None,
+    limit:     int = 200,
+    offset:    int = 0,
+    _: str = Depends(check_admin),
+):
+    if marketplace not in VALID_MARKETPLACES:
+        raise HTTPException(status_code=400, detail="Unsupported marketplace")
+
+    client = await get_supabase_client()
+
+    if shop_id:
+        filter_shop_ids = [shop_id]
+    elif user_id:
+        res = await client.table("shops").select("id").eq("user_id", user_id).execute()
+        filter_shop_ids = [s["id"] for s in (res.data or [])]
+        if not filter_shop_ids:
+            return []
+    else:
+        res = await client.table("shops").select("id").eq("marketplace", marketplace).execute()
+        filter_shop_ids = [s["id"] for s in (res.data or [])]
+        if not filter_shop_ids:
+            return []
+
+    q = client.table(f"returns_{marketplace}").select("*").in_("shop_id", filter_shop_ids)
+
+    if status:
+        q = q.eq(STATUS_COL[marketplace], status)
+    if date_from:
+        q = q.gte(DATE_COL[marketplace], date_from)
+    if date_to:
+        q = q.lte(DATE_COL[marketplace], date_to + "T23:59:59Z")
+
+    q = q.order("synced_at", desc=True).range(offset, offset + limit - 1)
+
+    try:
+        result = await q.execute()
+        return result.data
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"Storage unavailable: {str(e)}")
+
+
+@router.post("/sync/{shop_id}")
+async def admin_sync_shop(shop_id: str, _: str = Depends(check_admin)):
+    if not re.match(r'^[a-f0-9\-]{36}$', shop_id):
+        raise HTTPException(status_code=400, detail="Invalid shop ID format")
+
+    client = await get_supabase_client()
+    shop_result = await client.table("shops").select("*").eq("id", shop_id).maybe_single().execute()
+    if shop_result.data is None:
+        raise HTTPException(status_code=404, detail="Shop not found")
+
+    shop = shop_result.data
+    marketplace = shop["marketplace"]
+
+    if marketplace == "wb":
+        result = await sync_wb_returns(shop)
+    elif marketplace == "ozon":
+        result = await sync_ozon_returns(shop)
+    elif marketplace == "ym":
+        result = await sync_ym_returns(shop)
+    else:
+        raise HTTPException(status_code=400, detail="Unsupported marketplace")
+
+    await client.table("shops").update(
+        {"last_synced_at": datetime.now(timezone.utc).isoformat()}
+    ).eq("id", shop_id).execute()
+
+    return result
 
 
 @router.get("/shops")

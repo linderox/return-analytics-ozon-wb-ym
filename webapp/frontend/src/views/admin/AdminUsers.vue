@@ -1,37 +1,37 @@
 <template>
   <div class="space-y-8">
-    <div class="border-b border-[#1A1A1A] pb-4">
-      <h1 class="text-4xl font-black uppercase tracking-tighter text-[#D97706]">Пользователи</h1>
-      <p class="text-[#737373] font-mono text-xs mt-1">УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ СИСТЕМЫ</p>
+    <div class="border-b border-[#E5E5E5] pb-4 flex items-baseline gap-4">
+      <h1 class="font-mono text-[17px] font-bold text-[#1A1A1A] uppercase tracking-[0.06em]">Пользователи</h1>
+      <span class="font-mono text-[10px] text-[#A3A3A3] uppercase tracking-widest">/ управление</span>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
       <!-- Create user with password -->
-      <div class="bg-white border-2 border-[#1A1A1A] p-6 shadow-[10px_10px_0px_0px_rgba(0,0,0,0.05)]">
-        <h2 class="text-lg font-black uppercase tracking-tight mb-1">Создать пользователя</h2>
+      <div class="bg-white border border-[#E5E5E5] p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.03)]">
+        <h2 class="font-mono text-[13px] font-bold uppercase tracking-[0.06em] text-[#1A1A1A] mb-1">Создать пользователя</h2>
         <p class="font-mono text-[10px] text-[#737373] mb-6">С паролем — аккаунт сразу активен</p>
         <form @submit.prevent="createUser" class="space-y-3">
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label class="block text-[10px] font-mono uppercase tracking-widest text-[#737373] mb-1">Email *</label>
               <input v-model="newUser.email" type="email" required
-                class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]" />
+                class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]" />
             </div>
             <div>
               <label class="block text-[10px] font-mono uppercase tracking-widest text-[#737373] mb-1">Пароль *</label>
               <input v-model="newUser.password" type="password" required minlength="6"
-                class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]" />
+                class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]" />
             </div>
             <div>
               <label class="block text-[10px] font-mono uppercase tracking-widest text-[#737373] mb-1">ФИО</label>
               <input v-model="newUser.fio" type="text"
-                class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]" />
+                class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]" />
             </div>
             <div>
               <label class="block text-[10px] font-mono uppercase tracking-widest text-[#737373] mb-1">Тариф</label>
               <select v-model="newUser.plan"
-                class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706] bg-white">
+                class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706] bg-white">
                 <option value="free">Free</option>
                 <option value="basic">Basic</option>
                 <option value="pro">Pro</option>
@@ -50,7 +50,7 @@
       </div>
 
       <!-- Invite user — generate link -->
-      <div class="bg-white border-2 border-[#1A1A1A] p-6 shadow-[10px_10px_0px_0px_rgba(0,0,0,0.05)]">
+      <div class="bg-white border border-[#E5E5E5] p-6 shadow-[10px_10px_0px_0px_rgba(0,0,0,0.05)]">
         <h2 class="text-lg font-black uppercase tracking-tight mb-1">Пригласить по ссылке</h2>
         <p class="font-mono text-[10px] text-[#737373] mb-6">Пользователь сам задаст пароль — email не отправляется</p>
         <form @submit.prevent="generateInvite" class="space-y-3">
@@ -58,12 +58,12 @@
             <div>
               <label class="block text-[10px] font-mono uppercase tracking-widest text-[#737373] mb-1">Email *</label>
               <input v-model="inviteForm.email" type="email" required
-                class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]" />
+                class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]" />
             </div>
             <div>
               <label class="block text-[10px] font-mono uppercase tracking-widest text-[#737373] mb-1">Тариф</label>
               <select v-model="inviteForm.plan"
-                class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706] bg-white">
+                class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706] bg-white">
                 <option value="free">Free</option>
                 <option value="basic">Basic</option>
                 <option value="pro">Pro</option>
@@ -72,7 +72,7 @@
             <div class="sm:col-span-2">
               <label class="block text-[10px] font-mono uppercase tracking-widest text-[#737373] mb-1">ФИО</label>
               <input v-model="inviteForm.fio" type="text"
-                class="w-full border-2 border-[#1A1A1A] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]" />
+                class="w-full border border-[#E5E5E5] px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#D97706]" />
             </div>
           </div>
           <div class="flex items-center gap-4 pt-1">
@@ -105,10 +105,10 @@
     <div v-if="usersLoading" class="text-center py-24 font-mono uppercase text-[10px] tracking-widest text-[#737373]">
       Загрузка пользователей...
     </div>
-    <div v-else class="bg-white border-2 border-[#1A1A1A] shadow-[10px_10px_0px_0px_rgba(0,0,0,0.05)] overflow-x-auto">
+    <div v-else class="bg-white border border-[#E5E5E5] shadow-[10px_10px_0px_0px_rgba(0,0,0,0.05)] overflow-x-auto">
       <table class="w-full">
         <thead>
-          <tr class="border-b-2 border-[#1A1A1A] bg-[#FAFAFA]">
+          <tr class="border-b-2 border-[#E5E5E5] bg-[#FAFAFA]">
             <th class="text-left px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-[#737373]">ФИО / Email</th>
             <th class="text-left px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-[#737373]">ID</th>
             <th class="text-left px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-[#737373]">Тариф</th>
@@ -133,7 +133,7 @@
                 </select>
                 <button @click="updatePlan(u.id)"
                   :disabled="planUpdates[u.id] === u.plan"
-                  class="text-[10px] font-mono uppercase border border-[#1A1A1A] px-2 py-1 hover:bg-[#1A1A1A] hover:text-white transition-all disabled:opacity-30">
+                  class="text-[10px] font-mono uppercase border border-[#E5E5E5] px-2 py-1 hover:bg-[#1A1A1A] hover:text-white transition-all disabled:opacity-30">
                   ✓
                 </button>
                 <span v-if="planSuccess[u.id]" class="text-[10px] font-mono text-green-700 ml-1">✓</span>

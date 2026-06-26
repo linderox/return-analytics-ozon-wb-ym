@@ -21,7 +21,7 @@
         </div>
         <RouterLink
           to="/login"
-          class="block w-full py-3 px-4 border-2 border-[#1A1A1A] text-center font-bold uppercase text-xs tracking-widest hover:bg-[#FBF0D3] transition-colors"
+          class="block w-full py-3 px-4 border border-[#E5E5E5] text-center font-bold uppercase text-xs tracking-widest hover:bg-[#FBF0D3] transition-colors"
         >
           Вернуться ко входу
         </RouterLink>
@@ -35,7 +35,7 @@
             v-model="password"
             type="password"
             placeholder="••••••••"
-            class="w-full border-2 border-[#1A1A1A] px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#D97706]"
+            class="w-full border border-[#E5E5E5] px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#D97706]"
           />
         </div>
         <div>
@@ -44,7 +44,7 @@
             v-model="passwordConfirm"
             type="password"
             placeholder="••••••••"
-            class="w-full border-2 border-[#1A1A1A] px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#D97706]"
+            class="w-full border border-[#E5E5E5] px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#D97706]"
             @keyup.enter="updatePassword"
           />
         </div>

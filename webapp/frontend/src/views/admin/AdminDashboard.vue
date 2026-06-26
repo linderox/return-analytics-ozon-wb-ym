@@ -1,8 +1,8 @@
 <template>
   <div class="space-y-8">
-    <div class="border-b border-[#1A1A1A] pb-4">
-      <h1 class="text-4xl font-black uppercase tracking-tighter text-[#D97706]">Обзор</h1>
-      <p class="text-[#737373] font-mono text-xs mt-1">ОБЩАЯ СТАТИСТИКА СИСТЕМЫ</p>
+    <div class="border-b border-[#E5E5E5] pb-4 flex items-baseline gap-4">
+      <h1 class="font-mono text-[17px] font-bold text-[#1A1A1A] uppercase tracking-[0.06em]">Обзор</h1>
+      <span class="font-mono text-[10px] text-[#A3A3A3] uppercase tracking-widest">/ общая статистика</span>
     </div>
 
     <div v-if="loading" class="text-center py-24 font-mono uppercase text-[10px] tracking-widest text-[#737373]">
@@ -10,15 +10,15 @@
     </div>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-      <div class="bg-white border-2 border-[#1A1A1A] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
+      <div class="bg-white border border-[#E5E5E5] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
         <p class="font-mono text-[10px] uppercase tracking-widest text-[#737373] mb-2">Пользователи</p>
         <p class="text-5xl font-black text-[#1A1A1A]">{{ stats.users }}</p>
       </div>
-      <div class="bg-white border-2 border-[#1A1A1A] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
+      <div class="bg-white border border-[#E5E5E5] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
         <p class="font-mono text-[10px] uppercase tracking-widest text-[#737373] mb-2">Магазины</p>
         <p class="text-5xl font-black text-[#1A1A1A]">{{ stats.shops }}</p>
       </div>
-      <div class="bg-white border-2 border-[#1A1A1A] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
+      <div class="bg-white border border-[#E5E5E5] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
         <p class="font-mono text-[10px] uppercase tracking-widest text-[#737373] mb-2">Маркетплейсы</p>
         <div class="flex gap-3 mt-2">
           <span v-for="(count, mp) in stats.byMarketplace" :key="mp"
@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <div v-if="!loading" class="bg-white border-2 border-[#1A1A1A] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
+    <div v-if="!loading" class="bg-white border border-[#E5E5E5] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
       <h2 class="text-sm font-black uppercase tracking-tight mb-4">Тарифы пользователей</h2>
       <div class="flex gap-6">
         <div v-for="(count, plan) in stats.byPlan" :key="plan" class="text-center">
